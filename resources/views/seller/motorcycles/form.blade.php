@@ -1,0 +1,25 @@
+@extends('layouts.marketplace')
+@section('title', ($motorcycle ? 'Edit' : 'Add').' motorcycle | MotoMarket')
+@section('content')
+<section class="container py-5" style="max-width:900px">
+    <div class="eyebrow">Seller workspace</div><h1 class="h2 fw-bold">{{ $motorcycle ? 'Edit motorcycle' : 'Add a motorcycle' }}</h1><p class="text-muted">New listings and significant edits are reviewed before appearing publicly.</p>
+    <x-dashboard-nav />
+    <form method="POST" action="{{ $motorcycle ? route('seller.motorcycles.update', $motorcycle) : route('seller.motorcycles.store') }}" enctype="multipart/form-data" class="border rounded-2 p-4 p-md-5">
+        @csrf @if ($motorcycle) @method('PUT') @endif
+        <div class="row g-3">
+            <div class="col-md-6"><label class="form-label" for="brand">Brand</label><input class="form-control" id="brand" name="brand" value="{{ old('brand', $motorcycle?->brand) }}" required>@error('brand')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-md-6"><label class="form-label" for="model">Model</label><input class="form-control" id="model" name="model" value="{{ old('model', $motorcycle?->model) }}" required>@error('model')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-md-4"><label class="form-label" for="year">Year</label><input class="form-control" id="year" type="number" name="year" min="1950" max="{{ now()->year + 1 }}" value="{{ old('year', $motorcycle?->year) }}" required>@error('year')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-md-4"><label class="form-label" for="category_id">Category</label><select class="form-select" id="category_id" name="category_id" required><option value="">Choose a category</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(old('category_id', $motorcycle?->category_id) == $category->id)>{{ $category->name }}</option>@endforeach</select>@error('category_id')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-md-4"><label class="form-label" for="condition">Condition</label><select class="form-select" id="condition" name="condition" required><option value="used" @selected(old('condition', $motorcycle?->condition) === 'used')>Used</option><option value="new" @selected(old('condition', $motorcycle?->condition) === 'new')>New</option></select>@error('condition')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-md-6"><label class="form-label" for="price">Price (PHP)</label><input class="form-control" id="price" type="number" min="1" step="0.01" name="price" value="{{ old('price', $motorcycle?->price) }}" required>@error('price')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-md-6"><label class="form-label" for="mileage">Mileage (km, optional)</label><input class="form-control" id="mileage" type="number" min="0" name="mileage" value="{{ old('mileage', $motorcycle?->mileage) }}">@error('mileage')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-12"><label class="form-label" for="location">Location</label><input class="form-control" id="location" name="location" value="{{ old('location', $motorcycle?->location) }}" placeholder="City, province" required>@error('location')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            <div class="col-12"><label class="form-label" for="description">Description</label><textarea class="form-control" id="description" name="description" rows="6" minlength="30" maxlength="10000" required>{{ old('description', $motorcycle?->description) }}</textarea>@error('description')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+            @if ($motorcycle?->images->isNotEmpty())<div class="col-12"><span class="form-label d-block">Current photos</span><div class="d-flex flex-wrap gap-2">@foreach ($motorcycle->images as $image)<img src="{{ \Illuminate\Support\Facades\Storage::url($image->image_path) }}" alt="Listing photo" width="100" height="75" style="object-fit:cover">@endforeach</div><div class="form-text">Photos cannot be removed from this form. New photos are appended.</div></div>@endif
+            <div class="col-12"><label class="form-label" for="images">{{ $motorcycle ? 'Add photos' : 'Photos' }} (up to 6 total, 5 MB each)</label><input class="form-control" id="images" type="file" name="images[]" accept="image/jpeg,image/png,image/webp" multiple>@error('images')<div class="text-danger small">{{ $message }}</div>@enderror @error('images.*')<div class="text-danger small">{{ $message }}</div>@enderror</div>
+        </div>
+        <div class="d-flex gap-2 mt-4"><button class="btn btn-danger" type="submit">{{ $motorcycle ? 'Submit changes for review' : 'Submit for review' }}</button><a class="btn btn-outline-secondary" href="{{ route('seller.motorcycles.index') }}">Cancel</a></div>
+    </form>
+</section>
+@endsection

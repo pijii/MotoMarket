@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 242 48" role="img" aria-labelledby="title">
+  <title id="title">MotoMarket</title>
+  <g fill="none" stroke="#B91C1C" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5">
+    <circle cx="15" cy="32" r="9"/>
+    <circle cx="49" cy="32" r="9"/>
+    <path d="m15 32 12-18 12 18H15l9-12h13m0 0 5-7h8m-4 0 3 7m-29-6h11m3 18h12"/>
+  </g>
+  <text x="72" y="34" fill="#B91C1C" font-family="Instrument Sans,Segoe UI,sans-serif" font-size="25" font-weight="800">Moto</text>
+  <text x="144" y="34" fill="#222222" font-family="Instrument Sans,Segoe UI,sans-serif" font-size="25" font-weight="800">Market</text>
+</svg>

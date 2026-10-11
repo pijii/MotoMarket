@@ -1,0 +1,9 @@
+@extends('layouts.marketplace')
+@section('title', 'Messages | MotoMarket')
+@section('content')
+@php($other = auth()->id() === $conversation->buyer_id ? $conversation->seller : $conversation->buyer)
+<section class="container py-5" style="max-width:850px"><a href="{{ route('conversations.index') }}" class="link-danger">&larr; All conversations</a><div class="border-bottom py-3 mb-4"><div class="eyebrow">{{ $other->name }}</div><h1 class="h3 fw-bold mb-1">{{ $conversation->motorcycle->display_name }}</h1><a class="small link-secondary" href="{{ route('motorcycles.show', $conversation->motorcycle) }}">View listing</a></div>
+    <div class="d-flex flex-column gap-3 mb-4">@forelse ($conversation->messages as $message)<div class="p-3 rounded-2 {{ $message->sender_id === auth()->id() ? 'bg-danger text-white align-self-end' : 'bg-light align-self-start' }}" style="max-width:min(85%,620px)"><div class="small fw-semibold">{{ $message->sender->name }}</div><p class="mb-1" style="white-space:pre-wrap;overflow-wrap:anywhere">{{ $message->body }}</p><time class="small opacity-75" datetime="{{ $message->created_at->toIso8601String() }}">{{ $message->created_at->format('M j, g:i a') }}</time></div>@empty<div class="text-muted text-center py-5">Conversation started. Send a message to introduce yourself.</div>@endforelse</div>
+    <form method="POST" action="{{ route('conversations.messages.store', $conversation) }}" class="border-top pt-3">@csrf<label for="body" class="form-label">Message {{ $other->name }}</label><textarea id="body" class="form-control" name="body" rows="4" maxlength="3000" required>{{ old('body') }}</textarea>@error('body')<div class="text-danger small mt-1">{{ $message }}</div>@enderror<div class="d-flex justify-content-end mt-2"><button class="btn btn-danger" type="submit">Send message</button></div></form>
+</section>
+@endsection

@@ -1,0 +1,13 @@
+@extends('layouts.marketplace')
+@section('title', 'My listings | MotoMarket')
+@section('content')
+<section class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3"><div><div class="eyebrow">Seller workspace</div><h1 class="h2 fw-bold mb-0">My listings</h1></div><a href="{{ route('seller.motorcycles.create') }}" class="btn btn-danger">Add motorcycle</a></div>
+    <x-dashboard-nav />
+    @if ($motorcycles->isEmpty())<div class="text-center border rounded-2 p-5"><h2 class="h5 fw-bold">No listings yet</h2><p class="text-muted">Add your first motorcycle to reach buyers.</p><a class="btn btn-danger" href="{{ route('seller.motorcycles.create') }}">Create a listing</a></div>@else
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Motorcycle</th><th>Price</th><th>Status</th><th>Updated</th><th class="text-end">Actions</th></tr></thead><tbody>
+            @foreach ($motorcycles as $motorcycle)<tr><td><a class="fw-semibold text-decoration-none" href="{{ route('motorcycles.show', $motorcycle) }}">{{ $motorcycle->display_name }}</a></td><td>&#8369;{{ number_format((float) $motorcycle->price) }}</td><td><span class="badge {{ $motorcycle->status === 'approved' ? 'text-bg-success' : ($motorcycle->status === 'rejected' ? 'text-bg-danger' : 'text-bg-secondary') }}">{{ ucfirst($motorcycle->status) }}</span>@if ($motorcycle->rejection_reason)<div class="small text-danger mt-1">{{ $motorcycle->rejection_reason }}</div>@endif</td><td>{{ $motorcycle->updated_at->format('M j, Y') }}</td><td><div class="d-flex justify-content-end flex-wrap gap-2">@if (! in_array($motorcycle->status, ['sold', 'removed']))<a class="btn btn-sm btn-outline-dark" href="{{ route('seller.motorcycles.edit', $motorcycle) }}">Edit</a>@endif @if ($motorcycle->status === 'approved')<form method="POST" action="{{ route('seller.motorcycles.sold', $motorcycle) }}">@csrf<button class="btn btn-sm btn-outline-danger" type="submit">Mark sold</button></form>@endif @if ($motorcycle->status !== 'sold' && $motorcycle->status !== 'removed')<form method="POST" action="{{ route('seller.motorcycles.destroy', $motorcycle) }}" onsubmit="return confirm('Remove this listing from MotoMarket?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button></form>@endif</div></td></tr>@endforeach
+        </tbody></table></div><div>{{ $motorcycles->links() }}</div>
+    @endif
+</section>
+@endsection
