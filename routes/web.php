@@ -12,7 +12,8 @@ use App\Http\Controllers\Seller\MotorcycleController as SellerMotorcycleControll
 use App\Http\Controllers\Seller\SellerProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [MotorcycleController::class, 'home'])->name('home');
+Route::view('/', 'laravel-welcome')->name('landing');
+Route::get('/marketplace', [MotorcycleController::class, 'home'])->name('home');
 Route::get('/motorcycles', [MotorcycleController::class, 'index'])->name('motorcycles.index');
 Route::get('/motorcycles/{motorcycle}', [MotorcycleController::class, 'show'])->name('motorcycles.show');
 
